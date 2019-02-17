@@ -12,7 +12,7 @@
 
 NAME = libft.a
 
-HEADER = libft.h
+HEADER = includes/
 
 SRC = ft_striter.c \
 	ft_memset.c \
