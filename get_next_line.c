@@ -33,7 +33,7 @@ static t_list	*get_file(int fd, t_list **file)
 	return (temp);
 }
 
-static int		ft_read(int fd, char *buf, t_list *current)
+static int		ft_read(const int fd, char *buf, t_list *current)
 {
 	char	*temp;
 	int		ret;
@@ -44,7 +44,7 @@ static int		ft_read(int fd, char *buf, t_list *current)
 		ret = read(fd, buf, BUFF_SIZE);
 		buf[ret] = '\0';
 		temp = current->content;
-		current->content = ft_strjoin(current->content, buf);
+		current->content = ft_strjoin(temp, buf);
 		free(temp);
 		if (ft_strchr(current->content, '\n'))
 			break ;
@@ -63,55 +63,20 @@ int				get_next_line(const int fd, char **line)
 	if (line == NULL || fd < 0 || read(fd, buf, 0) < 0)
 		return (-1);
 	current = get_file(fd, &file);
+	*line = ft_strnew(0);
 	ret = ft_read(fd, buf, current);
 	if (ret < BUFF_SIZE && !ft_strlen(current->content))
 		return (0);
-	*line = ft_strdup(current->content);
-	if (ft_strchr(*line, '\n') != NULL)
-		*ft_strchr(*line, '\n') = '\0';
-	if (ft_strlen(*line) < ft_strlen(current->content))
+	*line = ft_strchr(current->content, '\n');
+	ret = *line - (char*)current->content;
+	*line = ft_strsub(current->content, 0, ret);
+	if (ret < (int)ft_strlen(current->content))
 	{
 		temp = current->content;
-		current->content = ft_strdup(current->content + ft_strlen(*line) + 1);
+		current->content = ft_strdup(current->content + ret + 1);
 		free(temp);
 	}
 	else
 		ft_strclr(current->content);
 	return (1);
-}
-
-int		main(void)
-{
-	int fd;
-	int fd2;
-	fd = open("gnl3_3.txt", O_RDONLY);
-	fd2 = open("testt2.txt", O_RDONLY);
-	char *line;
-	int i = 0;
-	while (get_next_line(fd, &line))
-	{
-		ft_putendl(line);
-		free(line);
-		i++;
-		if (i == 2)
-			break ;
-	}
-	i = 0;
-	while (get_next_line(fd2, &line))
-	{
-		ft_putendl(line);
-		free(line);
-		i++;
-		if (i == 2)
-			break;
-	}
-	i = 0;
-	while (get_next_line(fd, &line))
-	{
-		ft_putendl(line);
-		free(line);
-		i++;
-		if (i == 2)
-			break ;
-	}
 }

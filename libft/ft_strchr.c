@@ -14,18 +14,16 @@
 
 char		*ft_strchr(const char *s, int c)
 {
-	char	refactored_c;
-	int		index;
+	int		i;
 
-	index = 0;
-	refactored_c = c;
-	while (s[index])
+	i = 0;
+	while (s[i])
 	{
-		if (s[index + 1] == refactored_c)
-			return ((char*)&s[index + 1]);
-		if (s[index] == refactored_c)
-			return ((char*)&s[index]);
-		index++;
+		if (s[i] == c)
+			return ((char*)&s[i]);
+		i++;
 	}
+	if (c == '\0' && s[i] == '\0')
+		return ((char*)&s[i]);
 	return (NULL);
 }
