@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdio.h>
 
 static t_list	*get_file(int fd, t_list **file)
 {
@@ -57,26 +58,26 @@ int				get_next_line(const int fd, char **line)
 	int				ret;
 	char			buf[BUFF_SIZE + 1];
 	static t_list	*file;
-	t_list			*current;
+	t_list			*curr;
 	char			*temp;
 
 	if (line == NULL || fd < 0 || read(fd, buf, 0) < 0)
 		return (-1);
-	current = get_file(fd, &file);
-	*line = ft_strnew(0);
-	ret = ft_read(fd, buf, current);
-	if (ret < BUFF_SIZE && !ft_strlen(current->content))
+	curr = get_file(fd, &file);
+	ret = ft_read(fd, buf, curr);
+	if (ret < BUFF_SIZE && !ft_strlen(curr->content))
 		return (0);
-	*line = ft_strchr(current->content, '\n');
-	ret = *line - (char*)current->content;
-	*line = ft_strsub(current->content, 0, ret);
-	if (ret < (int)ft_strlen(current->content))
+	*line = ft_strchr(curr->content, '\n') == NULL ?
+			ft_strchr(curr->content, '\0') : ft_strchr(curr->content, '\n');
+	ret = *line - (char *)curr->content;
+	*line = ft_strsub(curr->content, 0, ret);
+	if (ret < (int)ft_strlen(curr->content))
 	{
-		temp = current->content;
-		current->content = ft_strdup(current->content + ret + 1);
+		temp = curr->content;
+		curr->content = ft_strdup(curr->content + ret + 1);
 		free(temp);
 	}
 	else
-		ft_strclr(current->content);
+		ft_strclr(curr->content);
 	return (1);
 }
